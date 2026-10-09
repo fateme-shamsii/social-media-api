@@ -8,7 +8,9 @@ class CreatePostSerializer(serializers.ModelSerializer):
 
 class ShowListPostsSerializer(serializers.ModelSerializer):
     author = serializers.CharField(source='author.username', read_only=True)
+    likes_count = serializers.IntegerField(read_only=True)
+    is_liked = serializers.BooleanField(read_only=True)
     class Meta:
         model = Post
-        fields = ('id','author','caption','image','created_at','updated_at')
+        fields = ('id','author','caption','image','likes_count','is_liked','created_at','updated_at')
 

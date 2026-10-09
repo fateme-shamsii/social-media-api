@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'follow.apps.FollowConfig',
     'post.apps.PostConfig',
+    'like.apps.LikeConfig',
 ]
 
 MIDDLEWARE = [

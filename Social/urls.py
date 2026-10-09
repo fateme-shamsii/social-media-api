@@ -25,6 +25,7 @@ urlpatterns = [
     path('profile/', include("profiles.urls")),
     path('follow/', include("follow.urls")),
     path('post/', include("post.urls")),
-]
+    path('like/', include("like.urls")),
+    ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

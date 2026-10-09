@@ -3,17 +3,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from django.shortcuts import get_object_or_404
-
 from .serializers import CreatePostSerializer,ShowListPostsSerializer
-from .models import Post
 from .permissions import IsAuthorOrReadOnly
+from .selectors import get_posts,get_post_by_pk
 
 class PostView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        posts = Post.objects.select_related('author').order_by('-created_at')
+        posts = get_posts(user=request.user)
+
         serializer = ShowListPostsSerializer(posts, many=True)
 
         return Response(serializer.data)
@@ -25,16 +24,16 @@ class PostView(APIView):
         serializer.save(author=request.user)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
+
 class PostDetailView(APIView):
     permission_classes = [IsAuthenticated, IsAuthorOrReadOnly]
 
     def get_post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        print("request user id:", request.user.id)
-        print("post author id:", post.author_id)
+        post = get_post_by_pk(pk=pk, user=request.user)
 
         self.check_object_permissions(request, post)
+
         return post
 
     def get(self, request, pk):
@@ -61,4 +60,4 @@ class PostDetailView(APIView):
 
         post.delete()
         
-        return Response({"detail": "Post deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT)
